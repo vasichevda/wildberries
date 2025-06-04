@@ -1,0 +1,61 @@
+//first solution - only compose
+@Composable
+fun TextChangeScreen() {
+    var text by remember { mutableStateOf("hello world") }
+    var isClicked by remember { mutableStateOf(false) }
+
+    LaunchedEffect(isClicked) {
+        if (isClicked) {
+            delay(5_000)
+            text = "goodbye world"
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(text = text, style = MaterialTheme.typography.headlineMedium)
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = { isClicked = true }) {
+            Text("Click me")
+        }
+    }
+}
+
+//second solution - with viewModel
+
+class TextChangeViewModel : ViewModel() {
+
+    private val _text = MutableStateFlow("hello world")
+    val text: StateFlow<String> = _text.asStateFlow()
+
+    fun onButtonClick() {
+        viewModelScope.launch {
+            delay(5_000)
+            _text.value = "goodbye world"
+        }
+    }
+}
+
+@Composable
+fun TextChangeScreen(viewModel: TextChangeViewModel = viewModel()) {
+    val text by viewModel.text.collectAsState()
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(text = text, style = MaterialTheme.typography.headlineMedium)
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = { viewModel.onButtonClick() }) {
+            Text("Click me")
+        }
+    }
+}
