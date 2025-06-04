@@ -9,7 +9,7 @@ I.
         |         [ Click me ]           |
         +--------------------------------+      **/
 
-//first solution - only compose
+//Первое решение - только compose
 @Composable
 fun TextChangeScreen() {
     var text by remember { mutableStateOf("hello world") }
@@ -37,7 +37,7 @@ fun TextChangeScreen() {
     }
 }
 
-//second solution - with viewModel
+//Второе решение - через viewModel
 
 class TextChangeViewModel : ViewModel() {
 
